@@ -139,10 +139,14 @@ class UsersController extends Controller
         $user = User::findOrFail($request->id);
         DB::table('model_has_roles')->where('model_id',$user->id)->delete();
         $user->assignRole($request->roles);
-        if ($user->update($inputs))
+        if ($user->update($inputs)){
+            updatedUploadedModel($user);
             return response()->json(['status' => 200]);
-        else
+        }else{
             return response()->json(['status' => 405]);
+        }
+
+
     }
 
 

@@ -122,6 +122,15 @@ if (!function_exists('get_lang')) {
 }
 
 
+//updated uploaded
+if (!function_exists('updatedUploadedModel')) {
+    function updatedUploadedModel($model)
+    {
+        $model->update(['uploaded' => false]);
+    }
+}
+
+
 
 if (!function_exists('getPriceBeforDiscount')) {
     function getPriceBeforDiscount($price = 0 ,$have_offer = 'no' , $offer_type = 'per' , $offer_value = 0 , $offer_min = 0 , $offer_bonus = 0)

@@ -64,7 +64,7 @@ Route::get('/clear/route', function (){
 
 //Route::get('/update/uploaded', function (){
 //
-//    \Illuminate\Support\Facades\DB::table('products')->update(['uploaded' => true]);
+//    \Illuminate\Support\Facades\DB::table('clients')->update(['uploaded' => true]);
 //
 //    return 'done';
 //});

@@ -126,10 +126,16 @@ class ReservationController extends Controller
             'event_id' => 'required|exists:events,id',
         ]);
         $rev = Reservations::where('id',$request->id)->first();
-        if($rev->update($date))
+        if($rev->update($date)){
+
+            updatedUploadedModel($rev);
             return response()->json(['status'=>200]);
-        else
+        }else{
             return response()->json(['status'=>405]);
+        }
+
+
+
     }
 
     public function delete_reservation(request $request){
@@ -326,8 +332,8 @@ class ReservationController extends Controller
         ]);
 
         // check if code is run on domain not local host
-        if($_SERVER['HTTP_HOST'] != 'localhost' && $_SERVER['HTTP_HOST'] != '127.0.0.1:8000')
-            Reservations::where('id',$request->rev_id)->first()->update(['uploaded' => true]);
+//        if($_SERVER['HTTP_HOST'] != 'localhost' && $_SERVER['HTTP_HOST'] != '127.0.0.1:8000')
+//            Reservations::where('id',$request->rev_id)->first()->update(['uploaded' => true]);
 
         for ($i = 0 ; $i < count($request->visitor_type); $i++) {
 
@@ -440,7 +446,7 @@ class ReservationController extends Controller
             if($product != null){
                 $titles[] = 'vat '.$product->vat.'%';
                 $vat[]    = round($product->price * $product_qty[$i] - $prices_before_tax[$i],2);
-                $total_vat += round($product->price * $product_qty[$i] - $prices_before_tax[$i],2); 
+                $total_vat += round($product->price * $product_qty[$i] - $prices_before_tax[$i],2);
             }
         }
 
@@ -604,7 +610,7 @@ class ReservationController extends Controller
             //  'total_price'    => $request->amount,
             'discount_type'  => $request->discount_type[0],
             'discount_value' => $request->discount_value,
-            'discount_id'    => $request->discount_id,        
+            'discount_id'    => $request->discount_id,
             'paid_amount'    => $request->amount,
             'grand_total'    => $request->revenue,
             'ticket_price'   => $request->ticket_price,
@@ -614,6 +620,7 @@ class ReservationController extends Controller
             'payment_status' => $status,
             'payment_method' => $request->payment_method,
             'note'           => $request->note,
+            'uploaded'       => false,
         ]);
 
 

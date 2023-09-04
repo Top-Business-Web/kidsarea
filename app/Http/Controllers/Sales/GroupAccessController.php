@@ -201,6 +201,8 @@ class GroupAccessController extends Controller
                 toastr()->info('not found');
                 return response(1,500);
             }
+
+            updatedUploadedModel($model);
             $model->update($data);
             if ($model->rev_id != '') {
                 $count = TicketRevModel::where([['rev_id', $model->rev_id], ['status', 'append']])->count();
@@ -209,6 +211,7 @@ class GroupAccessController extends Controller
                 $count = TicketRevModel::where([['ticket_id', $model->ticket_id], ['status', 'append']])->count();
             }
             if($count == 0){
+                updatedUploadedModel($ticket);
                 $ticket->update($status);
             }
         }
@@ -415,12 +418,14 @@ class GroupAccessController extends Controller
             'cashier_id' => auth()->user()->id,
             'day' => Carbon::now()->format('Y-m-d'),
             'amount' => $rev->rem_amount,
-            'payment_method' => $request->pay
+            'payment_method' => $request->pay,
+            'uploaded' => false,
         ]);
 
         $rev->update([
             'paid_amount' => $rev->grand_total,
-            'rem_amount' => 0
+            'rem_amount' => 0,
+            'uploaded' => false
         ]);
 
         return response(['message' => 'The remaining value is updated', 'status' => 200], 200);

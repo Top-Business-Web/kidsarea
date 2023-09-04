@@ -58,7 +58,7 @@ class DiscountController extends Controller
 
         if($_SERVER['HTTP_HOST'] != 'localhost' && $_SERVER['HTTP_HOST'] != '127.0.0.1:8000')
             $inputs['uploaded'] = true;
-        
+
         if(DiscountReason::create($inputs))
             return response()->json(['status'=>200]);
         else
@@ -93,10 +93,15 @@ class DiscountController extends Controller
             'desc'    => 'required|unique:discount_reasons,desc,'.$id,
         ]);
         $disc = DiscountReason::findOrFail($id);
-        if ($disc->update($inputs))
+        if ($disc->update($inputs)){
+            updatedUploadedModel($disc);
             return response()->json(['status' => 200]);
-        else
+        }else{
+
             return response()->json(['status' => 405]);
+
+        }
+
     }
 
     /**

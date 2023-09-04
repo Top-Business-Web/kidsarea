@@ -72,7 +72,7 @@
             n++;
         }
         console.log(n)
-        if (n >= 200){
+        if (n >= 270){
             n = 1
             var method = {
                 _token : "{{csrf_token()}}"
@@ -80,11 +80,12 @@
             $.post("{{route('changeDbConnection')}}",method,function (data) {
 
                 if (data.status == 200)
-                window.location.reload()
+                // window.location.reload()
+                    toastr.warning('Database offline sync successfully')
                 console.log(data)
             })
-
         }
+
         // console.log(n)
 
         localStorage.setItem("counter", n);
@@ -103,10 +104,15 @@
     $(document).on('keyup','.numbersOnly',function () {
         this.value = this.value.replace(/[^0-9\.]/g,'');
     });
+
     $.ajaxSetup({
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
     });
 
 </script>
 
+{{--
 
+  https://www.mediafire.com/file/tsoxgc6aihpe5dt/kids.zip/file
+
+--}}

@@ -173,6 +173,7 @@ class FamilyAccessController extends Controller
 
         Bracelets::where('title', $request->bracelet_number)->update($braceletData);
         $model->update($data);
+        updatedUploadedModel($model);
 
         if ($model->rev_id != '') {
             $count = TicketRevModel::where([['rev_id', $model->rev_id], ['status', 'append']])->count();
@@ -181,8 +182,11 @@ class FamilyAccessController extends Controller
             $count = TicketRevModel::where([['ticket_id', $model->ticket_id], ['status', 'append']])->count();
         }
         if($count == 0){
+            updatedUploadedModel($ticket);
             $ticket->update($status);
         }
+
+        updatedUploadedModel($ticket);
         $ticket->update($status);
 
 
@@ -205,7 +209,8 @@ class FamilyAccessController extends Controller
         $ticket->update([
             'paid_amount' => $ticket->grand_total,
             'rem_amount' => 0,
-            'payment_status' => 1
+            'payment_status' => 1,
+            'uploaded' => false,
         ]);
         return response(['message' => 'The remaining value is updated', 'status' => 200], 200);
     }

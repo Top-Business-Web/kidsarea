@@ -148,9 +148,14 @@ class AdminController extends Controller
 
 
         $admin->givePermissionTo($request->permissions);
-        if ($admin->update($inputs))
+        if ($admin->update($inputs)){
+            updatedUploadedModel($admin);
             return response()->json(['status' => 200]);
-        else
+        }else{
+
             return response()->json(['status' => 405]);
+        }
+
+
     }
 }//end class

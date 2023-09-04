@@ -137,10 +137,14 @@ class ProductController extends Controller
         $price_before_vat = $request->price / ($request->vat / 100 + 1);
         $inputs['price_before_vat'] = round($price_before_vat, 2);
         $product = Product::findOrFail($request->id);
-        if($product->update($inputs))
+        if($product->update($inputs)){
+
+            updatedUploadedModel($product);
             return response()->json(['status'=>200]);
-        else
+        } else{
             return response()->json(['status'=>405]);
+
+        }
     }
 
     /**

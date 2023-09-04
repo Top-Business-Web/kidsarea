@@ -146,6 +146,7 @@ class ExitController extends Controller
         $id = base64_decode($id);
         $model = TicketRevModel::findOrFail($id);
         $data['status'] = 'out';
+        updatedUploadedModel($model);
         $model->update($data);
 
         if ($model->rev_id != '') {
@@ -163,6 +164,7 @@ class ExitController extends Controller
 
 
         if (!$models->count()) {
+            updatedUploadedModel($ticket);
             $ticket->update($data);
         }
 
@@ -234,7 +236,7 @@ class ExitController extends Controller
             $top_up_hours = $request->top_up_hours - $response['latestHours'];
             $data['top_up_hours'] = $top_up_hours + $model->top_up_hours;
             $price = $response['array'][$model->visitor_type_id];
-          
+
             //start increment payment
 
             $ticket->payments()->create([
@@ -250,26 +252,26 @@ class ExitController extends Controller
             $ticket->vat +=  ($price)  * (14 / 100);
             $ticket->grand_total +=  ($price * 1.14);
             // $ticket->ticket_price =  ($ticket->grand_total - $ticket->vat);
-           
+
             $ticket->ent_tax += $price  -  ($price /1.2);
              // $ticket->ticket_price += ($price * 1.14);
             /**
-             * model data and saving 
+             * model data and saving
              */
-                  
+
             $data['top_up_price'] = $price + $model->top_up_price;
             $model->shift_end = Carbon::parse($model->shift_end)->addHours($data['top_up_hours']);
-            $price = $response['array'][$model->visitor_type_id] - $discount_val;    
+            $price = $response['array'][$model->visitor_type_id] - $discount_val;
             $model->save();
             /**
-             * end of model data 
+             * end of model data
              */
             $ticket->paid_amount += ($price * 1.14);
             $ticket->total_price += ($price * 1.14);
-           
+
             $ticket->save();
 
-        
+
             toastr()->success('top up stored successfully');
 
         }
@@ -1044,12 +1046,16 @@ class ExitController extends Controller
 
 
 
+        updatedUploadedModel($ticket);
         $ticket->save();
 
+
+        updatedUploadedModel($model);
         $model->save();
 
         // check if all models canceled then mark the ticket as not paid
         if($ticket->grand_total == 0){
+            updatedUploadedModel($ticket);
             $ticket->update([
                 'payment_status'  => '0',
             ]);

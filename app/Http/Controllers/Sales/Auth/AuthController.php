@@ -26,6 +26,7 @@ class AuthController extends Controller{
 
     public function __construct()
     {
+        ini_set("max_execution_time", 1000);
         $this->middleware('auth')->only('logout');
     }
 
@@ -66,7 +67,14 @@ class AuthController extends Controller{
 
     public function uploadData()
     {
+        if (!$this->is_connected()) {
+            return false;
+        }
+
 //        Artisan::call('sync:new-records');
+
+        return response()->json(['status' => 200]);
+
 
     }
 
@@ -85,6 +93,19 @@ class AuthController extends Controller{
     }
 
 
+    /*
+
+
+    DB::table('your_table')
+    ->where('condition', '=', 'some_value')
+    ->chunk(200, function ($records) {
+        foreach ($records as $record) {
+            // Update each record here
+        }
+    });
+
+
+     */
 
 }
 

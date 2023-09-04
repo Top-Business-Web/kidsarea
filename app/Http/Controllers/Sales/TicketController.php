@@ -453,6 +453,7 @@ class TicketController extends Controller
             'discount_value' => $request->discount_value,
             'paid_amount' => $request->amount,
             'grand_total' => $request->revenue,
+            'uploaded' => false,
             'rem_amount' => $request->rem,
         ]);
 
@@ -464,7 +465,8 @@ class TicketController extends Controller
             'cashier_id' => auth()->user()->id,
             'day' => Carbon::now()->format('Y-m-d'),
             'amount' => ($request->revenue - $request->oldPayRev),
-            'payment_method' => $request->pay
+            'payment_method' => $request->pay,
+            'uploaded' => false,
 
         ]);
 
@@ -481,6 +483,7 @@ class TicketController extends Controller
                 'name' => $request->visitor_name[$i],
                 'birthday' => $request->visitor_birthday[$i],
                 'gender' => ($request->gender[$i]) ?? null,
+                'uploaded' => false,
             ]);
         }
         foreach ($ticket->products as $product) {
@@ -495,6 +498,7 @@ class TicketController extends Controller
                     'qty' => $request->product_qty[$i],
                     'price' => $request->product_price[$i] / $request->product_qty[$i],
                     'total_price' => $request->product_price[$i],
+                    'uploaded' => false,
                 ]);
             }
         }
