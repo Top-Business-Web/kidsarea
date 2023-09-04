@@ -263,6 +263,7 @@ class ExitController extends Controller
             $model->shift_end = Carbon::parse($model->shift_end)->addHours($data['top_up_hours']);
             $price = $response['array'][$model->visitor_type_id] - $discount_val;
             $model->save();
+            updatedUploadedModel($model);
             /**
              * end of model data
              */
@@ -270,6 +271,7 @@ class ExitController extends Controller
             $ticket->total_price += ($price * 1.14);
 
             $ticket->save();
+            updatedUploadedModel($ticket);
 
 
             toastr()->success('top up stored successfully');
