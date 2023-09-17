@@ -238,14 +238,27 @@ class ExitController extends Controller
             $price = $response['array'][$model->visitor_type_id];
 
             //start increment payment
+            if($ticket->discount_type == 'per' && $ticket->discount_value != 0){
 
-            $ticket->payments()->create([
-            'ticket_id' => $ticket->id,
-            'cashier_id' => auth()->user()->id,
-            'day' => Carbon::now()->format('Y-m-d'),
-            'amount' => ($price * 1.14),
-            'payment_method' => $request->pay
-            ]);
+                $ticket->payments()->create([
+                    'ticket_id' => $ticket->id,
+                    'cashier_id' => auth()->user()->id,
+                    'day' => Carbon::now()->format('Y-m-d'),
+                    'amount' => (($price * 1.14) * ($ticket->discount_value)) / 100,
+                    'payment_method' => $request->pay,
+                ]);
+
+            }else{
+                $ticket->payments()->create([
+                    'ticket_id' => $ticket->id,
+                    'cashier_id' => auth()->user()->id,
+                    'day' => Carbon::now()->format('Y-m-d'),
+                    'amount' => ($price * 1.14),
+                    'payment_method' => $request->pay
+                ]);
+            }
+
+
 
             $ticket->total_top_up_hours =  $top_up_hours;
             $ticket->total_top_up_price += $price / 1.2;
@@ -272,7 +285,6 @@ class ExitController extends Controller
 
             $ticket->save();
             updatedUploadedModel($ticket);
-
 
             toastr()->success('top up stored successfully');
 

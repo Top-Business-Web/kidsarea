@@ -458,7 +458,6 @@ class TicketController extends Controller
         ]);
 
 
-
         Payment::create([
 
             'ticket_id' => $request->ticket_id,
@@ -467,7 +466,6 @@ class TicketController extends Controller
             'amount' => ($request->revenue - $request->oldPayRev),
             'payment_method' => $request->pay,
             'uploaded' => false,
-
         ]);
 
 
